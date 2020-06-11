@@ -1,12 +1,16 @@
-import java.time.LocalTime;
+import models.DirectedGraph;
+import utils.FileManager;
 
-import static java.time.temporal.ChronoUnit.MINUTES;
-
+import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        final LocalTime lc1 = LocalTime.parse("01:20");
-        final LocalTime lc2 = LocalTime.parse("00:20");
-        System.out.println(MINUTES.between(lc2, lc1));
+        FileManager fileManager = new FileManager("bigGraph.txt");
+        try {
+            DirectedGraph graph = fileManager.readDirectedGraphFile();
+            graph.calculateShortestPathFromSource("A", "E");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
