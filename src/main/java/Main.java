@@ -1,25 +1,29 @@
 import models.DirectedGraph;
-import models.Graph;
 import utils.FileManager;
 
 import java.io.IOException;
-import java.time.LocalTime;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
 
 
 public class Main {
     public static void main(String[] args) {
-        final LocalTime lc1 = LocalTime.parse("01:20");
-        final LocalTime lc2 = LocalTime.parse("00:20");
-        System.out.println(MINUTES.between(lc2, lc1));
+
+        // SHORTEST PATH EXAMPLE
+        FileManager fileManager = new FileManager("bigGraph.txt");
+        try {
+            DirectedGraph graph = fileManager.readDirectedGraphFile();
+            graph.calculateShortestPathFromSource("D", "A");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         //THIRD PROBLEM EXAMPLE
-        FileManager fileManager = new FileManager("stronglyConnectedGraph.txt");
-        FileManager fileManager2 = new FileManager("notStronglyConnectedGraph.txt");
+        FileManager fileManager2 = new FileManager("stronglyConnectedGraph.txt");
+        FileManager fileManager3 = new FileManager("notStronglyConnectedGraph.txt");
         try {
-            DirectedGraph scg = fileManager.readDirectedGraphFile();
-            DirectedGraph nscg = fileManager2.readDirectedGraphFile();
+            DirectedGraph scg = fileManager2.readDirectedGraphFile();
+            DirectedGraph nscg = fileManager3.readDirectedGraphFile();
             scg.thirdProblem();
             nscg.thirdProblem();
         } catch (IOException e) {
