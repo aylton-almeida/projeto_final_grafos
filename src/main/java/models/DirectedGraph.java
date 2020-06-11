@@ -3,6 +3,7 @@ package models;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class DirectedGraph extends Graph {
@@ -18,9 +19,13 @@ public class DirectedGraph extends Graph {
      * @return a list containing all edges that need to be used
      */
     public List<Edge> dijkstraAlgorithm(String source, String destination){
-        List<Double> distances = new ArrayList<>();
-        this.adjacencyMap.forEach((key, value) -> distances.add(Double.MAX_VALUE));
-        return new ArrayList<>();
+        final List<Double> shortestPath = new LinkedList<>();
+
+
+
+        final List<Edge> paths = new ArrayList<>();
+
+        return paths;
     }
 
 }
