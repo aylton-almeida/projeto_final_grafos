@@ -23,17 +23,16 @@ public class Edge {
     }
 
     /**
-     * When arriving at given time, returns the time taken with the next flight and
-     * which one is it
+     * When arriving at given time, returns the time taken for the next flight, including the flight
+     * there and which one is it
      *
      * @param departureTime Starting time
      * @return Time and Flight taken
      */
     public FlightDistanceHelper getFirstFlightCost(LocalTime departureTime) {
         final int distanceInMinutes = Converter.distanceInMinutes(this.distance);
-        AtomicReference<LocalTime> firstFlightSameDay = new AtomicReference<>(null);
-        AtomicReference<LocalTime> firstFlightNextDay = new AtomicReference<>(null);
-        ;
+        final AtomicReference<LocalTime> firstFlightSameDay = new AtomicReference<>(null);
+        final AtomicReference<LocalTime> firstFlightNextDay = new AtomicReference<>(null);
 
         departureHours.forEach(hour -> {
             final int differenceFirstFlightSameDay = firstFlightSameDay.get() == null ? Integer.MAX_VALUE : (int) MINUTES.between(departureTime, firstFlightSameDay.get());
@@ -46,14 +45,14 @@ public class Edge {
                 firstFlightNextDay.set(hour);
         });
 
-        final int differenceFirstFlightSameDay = (int) MINUTES.between(departureTime, firstFlightSameDay.get());
-        final int differenceFirstFlightNextDay = (24 * 60) - (((int) MINUTES.between(departureTime, firstFlightNextDay.get())) * -1);
+        final int differenceFirstFlightSameDay = firstFlightSameDay.get() == null ? Integer.MAX_VALUE : (int) MINUTES.between(departureTime, firstFlightSameDay.get());
+        final int differenceFirstFlightNextDay = firstFlightNextDay.get() == null ? Integer.MAX_VALUE : (24 * 60) - (((int) MINUTES.between(departureTime, firstFlightNextDay.get())) * -1);
 
         final LocalTime flightTime = differenceFirstFlightSameDay < differenceFirstFlightNextDay
                 ? firstFlightSameDay.get()
                 : firstFlightNextDay.get();
 
-        final int minutesTaken = distanceInMinutes + ((int) MINUTES.between(flightTime, departureTime));
+        final int minutesTaken = distanceInMinutes + (flightTime.equals(firstFlightNextDay.get()) ? differenceFirstFlightNextDay : differenceFirstFlightSameDay);
 
         return new FlightDistanceHelper(minutesTaken, flightTime);
     }

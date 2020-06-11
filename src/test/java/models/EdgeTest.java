@@ -13,7 +13,7 @@ class EdgeTest {
     Edge edge;
 
     @Test
-    void getFirstFlightCost() {
+    void getFirstFlightCostTest() {
         final List<LocalTime> departureTimes = new ArrayList<>(
                 Arrays.asList(
                         LocalTime.of(0, 30),
@@ -23,8 +23,20 @@ class EdgeTest {
                 )
         );
         edge = new Edge("A", 600, departureTimes);
-        final FlightDistanceHelper expected = new FlightDistanceHelper(344, LocalTime.of(8, 0));
-        final FlightDistanceHelper actual = edge.getFirstFlightCost(LocalTime.parse("02:16"));
-        assertEquals(expected, actual);
+        FlightDistanceHelper expected = new FlightDistanceHelper(384, LocalTime.of(8, 0));
+        FlightDistanceHelper actual = edge.getFirstFlightCost(LocalTime.parse("02:16"));
+        assertEquals(expected, actual, "should recommend the flight at 8 and say 384 min");
+
+        expected = new FlightDistanceHelper(730, LocalTime.of(0, 30));
+        actual = edge.getFirstFlightCost(LocalTime.parse("13:00"));
+        assertEquals(expected, actual, "should recommend the flight at midnight and say 700 min");
+
+        expected = new FlightDistanceHelper(280, LocalTime.parse("08:00"));
+        actual = edge.getFirstFlightCost(LocalTime.parse("04:00"));
+        assertEquals(expected, actual, "should recommend the flight at 8 and say 280 min");
+
+        expected = new FlightDistanceHelper(280, LocalTime.parse("08:00"));
+        actual = edge.getFirstFlightCost(LocalTime.parse("04:00"));
+        assertEquals(expected, actual, "should recommend the flight at 8 and say 280 min");
     }
 }
