@@ -32,9 +32,9 @@ public class DirectedGraph extends Graph {
         visited.put(vertice, true);
 
         // do for every edge which vertice is connected
-        for (Edge edge : this.adjacencyMap.get(vertice)) {
-            if (!visited.get(edge.destination)) DepthFirstSearch(edge.destination, visited);
-        }
+        for (Edge edge : this.adjacencyMap.get(vertice))
+            if (!visited.get(edge.destination))
+                DepthFirstSearch(edge.destination, visited);
     }
 
     /**
@@ -57,6 +57,45 @@ public class DirectedGraph extends Graph {
             }
         }
         return true;
+    }
+
+    public void printStronglyConnectedAirports() {
+        System.out.println("Airport is not fully strongly connected, but these airports sets are: ");
+        // do for every vertice
+        for (String vertice : this.adjacencyMap.keySet()) {
+            // stores vertices visited or not
+            HashMap<String, Boolean> visited = new HashMap<>();
+            for (String v : this.adjacencyMap.keySet())
+                visited.put(v, false);
+
+            // start DFS from first vertice
+            DepthFirstSearch(vertice, visited);
+
+            // if DFS doesn't visit all vertices, then graph is not strongly connected
+            boolean hasVisitedAll = true;
+            for (Map.Entry<String, Boolean> v : visited.entrySet()) {
+                if (!visited.get(v.getKey())) {
+                    hasVisitedAll = false;
+                };
+            }
+            if (hasVisitedAll) {
+                System.out.print(vertice + " can reach out to airports ");
+                for (Map.Entry<String, Boolean> v : visited.entrySet()) {
+                    if (!v.getKey().equals(vertice)) {
+                        System.out.print(v.getKey() + " ");
+                    }
+                }
+                System.out.println("(all remaining airports)");
+            }
+        }
+    }
+
+    public void ThirdProblem() {
+        if (this.isStronglyConnected()) {
+
+        } else {
+            printStronglyConnectedAirports();
+        }
     }
 
 
