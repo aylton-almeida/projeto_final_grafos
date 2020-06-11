@@ -178,11 +178,7 @@ public class DirectedGraph extends Graph {
      */
     public boolean isStronglyConnected(Set<String> verticesSet) {
         Set<String> vertices;
-        if (verticesSet != null) {
-            vertices = verticesSet;
-        } else {
-            vertices = this.adjacencyMap.keySet();
-        }
+        vertices = Objects.requireNonNullElseGet(verticesSet, this.adjacencyMap::keySet);
         // do for every vertice
         for (String vertice : vertices) {
             // stores vertices visited or not
@@ -229,7 +225,7 @@ public class DirectedGraph extends Graph {
             for (Map.Entry<String, Boolean> v : visited.entrySet()) {
                 if (!visited.get(v.getKey())) {
                     hasVisitedAll = false;
-                };
+                }
             }
             if (hasVisitedAll) {
                 System.out.print(vertice + " can reach out to airports ");
