@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DirectedGraphTest {
     DirectedGraph graph;
+    DirectedGraph graph2;
 
     @Test
     void addVertexFromString() {
@@ -41,6 +42,20 @@ class DirectedGraphTest {
         try {
             graph = fileManager.readDirectedGraphFile();
             //TODO: finish
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void isStronglyConnected() {
+        FileManager fileManager = new FileManager("graph.txt");
+        FileManager fileManager2 = new FileManager("graph2.txt");
+        try {
+            graph = fileManager.readDirectedGraphFile();
+            graph2 = fileManager2.readDirectedGraphFile();
+            assertTrue(this.graph.isStronglyConnected(), "should return that graph is strongly connected");
+            assertFalse(this.graph2.isStronglyConnected(), "should return that graph is not strongly connected");
         } catch (IOException e) {
             e.printStackTrace();
         }
