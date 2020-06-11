@@ -54,8 +54,8 @@ class DirectedGraphTest {
         try {
             graph = fileManager.readDirectedGraphFile();
             graph2 = fileManager2.readDirectedGraphFile();
-            assertTrue(this.graph.isStronglyConnected(), "should return that graph is strongly connected");
-            assertFalse(this.graph2.isStronglyConnected(), "should return that graph is not strongly connected");
+            assertTrue(this.graph.isStronglyConnected(null), "should return that graph is strongly connected");
+            assertFalse(this.graph2.isStronglyConnected(null), "should return that graph is not strongly connected");
         } catch (IOException e) {
             e.printStackTrace();
         }
