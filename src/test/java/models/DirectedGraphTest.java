@@ -49,8 +49,8 @@ class DirectedGraphTest {
 
     @Test
     void isStronglyConnected() {
-        FileManager fileManager = new FileManager("graph.txt");
-        FileManager fileManager2 = new FileManager("graph2.txt");
+        FileManager fileManager = new FileManager("stronglyConnectedGraph.txt");
+        FileManager fileManager2 = new FileManager("notStronglyConnectedGraph.txt");
         try {
             graph = fileManager.readDirectedGraphFile();
             graph2 = fileManager2.readDirectedGraphFile();
