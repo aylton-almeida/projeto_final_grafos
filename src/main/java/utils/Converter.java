@@ -9,7 +9,7 @@ public abstract class Converter {
      * @param distance distance to be converted
      * @return the minutes taken to go the distance by plane
      */
-    public static int distanceInMinutes(double distance) {
-        return (int) ((distance / planeSpeed) * 60);
+    public static double distanceInMinutes(double distance) {
+        return (distance / planeSpeed) * 60;
     }
 }

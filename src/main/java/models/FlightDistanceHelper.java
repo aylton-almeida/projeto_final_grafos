@@ -4,10 +4,10 @@ import java.time.LocalTime;
 import java.util.Objects;
 
 class FlightDistanceHelper {
-    final int minutesTaken;
+    final double minutesTaken;
     final LocalTime flightTaken;
 
-    FlightDistanceHelper(int minutesTaken, LocalTime flightTaken) {
+    FlightDistanceHelper(double minutesTaken, LocalTime flightTaken) {
         this.minutesTaken = minutesTaken;
         this.flightTaken = flightTaken;
     }

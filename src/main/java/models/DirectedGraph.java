@@ -6,6 +6,8 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.time.temporal.ChronoUnit.MINUTES;
+
 public class DirectedGraph extends Graph {
     @Override
     public void addVertexFromString(String string) {
@@ -45,9 +47,6 @@ public class DirectedGraph extends Graph {
             connections.put(key, Double.MAX_VALUE);
             flyingTime.put(key, Double.MAX_VALUE);
             totalDurationTime.put(key, Double.MAX_VALUE);
-
-            //? Initialize vertex states
-            vertexStates.put(key, VisitStatus.NOT_VISITED);
         });
 
         //? Add information obtained from source
@@ -58,13 +57,11 @@ public class DirectedGraph extends Graph {
 
         distancesPaths.get(source).add(source);
 
-        vertexStates.put(source, VisitStatus.VISITED);
-
         this.adjacencyMap.get(source).forEach(edge -> {
                     distances.put(edge.destination, edge.distance);
                     connections.put(edge.destination, 1.0);
-                    flyingTime.put(edge.destination, (double) Converter.distanceInMinutes(edge.distance));
-                    totalDurationTime.put(edge.destination, (double) edge.getFirstFlightCost(LocalTime.now()).minutesTaken);
+                    flyingTime.put(edge.destination, Converter.distanceInMinutes(edge.distance));
+                    totalDurationTime.put(edge.destination, edge.getFirstFlightCost(LocalTime.now()).minutesTaken);
 
                     distancesPaths.get(edge.destination).addAll(new ArrayList<>(Arrays.asList(source, edge.destination)));
                     connectionsPaths.get(edge.destination).addAll(new ArrayList<>(Arrays.asList(source, edge.destination)));
@@ -73,9 +70,21 @@ public class DirectedGraph extends Graph {
                 }
         );
 
+        resetVertexStates(source, vertexStates);
         calculateShortestPathFromSource(distances, distancesPaths, vertexStates, DijkstraParam.DISTANCES);
-        printResults("Distance", "Km", distances.get(destination), distancesPaths.get(destination));
+        printResults(source, destination, "Distance", "Km", distances.get(destination), distancesPaths.get(destination));
 
+        resetVertexStates(source, vertexStates);
+        calculateShortestPathFromSource(connections, connectionsPaths, vertexStates, DijkstraParam.CONNECTIONS);
+        printResults(source, destination, "Connections", "", connections.get(destination), connectionsPaths.get(destination));
+
+        resetVertexStates(source, vertexStates);
+        calculateShortestPathFromSource(flyingTime, flyingTimePaths, vertexStates, DijkstraParam.FLYING_TIME);
+        printResults(source, destination, "Flying Time", "h", flyingTime.get(destination), flyingTimePaths.get(destination));
+
+        resetVertexStates(source, vertexStates);
+        calculateShortestPathFromSource(totalDurationTime, totalDurationTimePaths, vertexStates, DijkstraParam.TOTAL_DURATION_TIME);
+        printResults(source, destination, "Total Duration Time", "h", totalDurationTime.get(destination), totalDurationTimePaths.get(destination));
     }
 
     private void calculateShortestPathFromSource(
@@ -105,29 +114,52 @@ public class DirectedGraph extends Graph {
                     .stream()
                     .filter(edge -> vertexState.get(edge.destination).equals(VisitStatus.NOT_VISITED))
                     .forEach(edge -> {
-                        switch (param) {
-                            case DISTANCES -> distancesCompare(weights, paths, edge, currentVertex);
+                        double currentWeight = weights.get(edge.destination);
+                        double newWeight = switch (param) {
+                            case DISTANCES -> weights.get(currentVertex) + edge.distance;
+                            case CONNECTIONS -> weights.get(currentVertex) + 1;
+                            case FLYING_TIME -> weights.get(currentVertex) + Converter.distanceInMinutes(edge.distance);
+                            case TOTAL_DURATION_TIME -> weights.get(currentVertex) + edge.getFirstFlightCost(LocalTime.now()).minutesTaken;
+                        };
+                        if (newWeight < currentWeight) {
+                            weights.put(edge.destination, newWeight);
+                            paths.put(edge.destination, new LinkedList<>());
+                            paths.get(currentVertex).forEach(paths.get(edge.destination)::add);
+                            paths.get(edge.destination).add(edge.destination);
                         }
                     });
         }
     }
 
-    private void distancesCompare(HashMap<String, Double> weights, HashMap<String, LinkedList<String>> paths, Edge currentEdge, String currentVertex) {
-        double currentWeight = weights.get(currentEdge.destination);
-        double newWeight = weights.get(currentVertex) + currentEdge.distance;
-        if (newWeight < currentWeight) {
-            weights.put(currentEdge.destination, newWeight);
-            paths.put(currentEdge.destination, new LinkedList<>());
-            paths.get(currentVertex).forEach(paths.get(currentEdge.destination)::add);
-            paths.get(currentEdge.destination).add(currentEdge.destination);
-        }
-    }
-
-    private void printResults(String name, String measureUnit, Double smallestWeight, LinkedList<String> smallestPath) {
+    /**
+     * Prints shortest path results
+     *
+     * @param source         Origin vertex
+     * @param destination    Vertex gone to
+     * @param name           Name of the parameter
+     * @param measureUnit    Parameter measure unit
+     * @param smallestWeight Parameter weight
+     * @param smallestPath   Parameter path
+     */
+    private void printResults(String source, String destination, String name, String measureUnit, Double smallestWeight, LinkedList<String> smallestPath) {
         if (smallestPath.size() == 0)
             System.out.println("There is no available path");
-        else
-            System.out.println(String.format("%s -> weight: %s %s, path: %s\n", name, smallestWeight.toString(), measureUnit, Arrays.toString(smallestPath.toArray())));
+        else if (measureUnit.equals("h")) {
+            System.out.println(String.format("%s (%s, %S) -> weight: %d:%d %s, path: %s\n",
+                    name, source, destination, (int) (smallestWeight / 60), (int) (smallestWeight % 60), measureUnit, Arrays.toString(smallestPath.toArray())))
+            ;
+        } else
+            System.out.println(String.format("%s (%s, %S) -> weight: %s %s, path: %s\n",
+                    name, source, destination, smallestWeight.toString(), measureUnit, Arrays.toString(smallestPath.toArray())));
+
     }
 
+    private void resetVertexStates(String source, HashMap<String, VisitStatus> vertexStates) {
+        this.adjacencyMap.forEach((key, value) -> {
+            if (key.equals(source))
+                vertexStates.put(key, VisitStatus.VISITED);
+            else
+                vertexStates.put(key, VisitStatus.NOT_VISITED);
+        });
+    }
 }

@@ -8,7 +8,7 @@ public class Main {
         FileManager fileManager = new FileManager("bigGraph.txt");
         try {
             DirectedGraph graph = fileManager.readDirectedGraphFile();
-            graph.calculateShortestPathFromSource("A", "E");
+            graph.calculateShortestPathFromSource("D", "A");
         } catch (IOException e) {
             e.printStackTrace();
         }
