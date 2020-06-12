@@ -177,10 +177,10 @@ public class DirectedGraph extends Graph {
      * @return if graph is strongly connected or not
      */
     public boolean isStronglyConnected(Set<String> vertexSet) {
-        Set<String> vertexs;
-        vertexs = Objects.requireNonNullElseGet(vertexSet, this.adjacencyMap::keySet);
+        Set<String> vertexes;
+        vertexes = Objects.requireNonNullElseGet(vertexSet, this.adjacencyMap::keySet);
         // do for every vertex
-        for (String vertex : vertexs) {
+        for (String vertex : vertexes) {
             // stores vertex visited or not
             HashMap<String, Boolean> visited = new HashMap<>();
             for (String v : this.adjacencyMap.keySet())
@@ -199,12 +199,12 @@ public class DirectedGraph extends Graph {
 
     public void printEssentialAirports() {
         System.out.println("Airport is strongly connected");
-        Set<String> vertexs = new HashSet<>(this.adjacencyMap.keySet());
+        Set<String> vertexes = new HashSet<>(this.adjacencyMap.keySet());
         for (String vertex : this.adjacencyMap.keySet()) {
-            vertexs.remove(vertex);
-            if (this.isStronglyConnected(vertexs))
+            vertexes.remove(vertex);
+            if (this.isStronglyConnected(vertexes))
                 System.out.println("Airport " + vertex + " is essential and removing it from graph turns it into a not strongly connected graph.");
-            vertexs = new HashSet<>(this.adjacencyMap.keySet());
+            vertexes = new HashSet<>(this.adjacencyMap.keySet());
         }
     }
 
