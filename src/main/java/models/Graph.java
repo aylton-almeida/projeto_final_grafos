@@ -59,23 +59,29 @@ public abstract class Graph {
     protected void addVertexFromString(String string, boolean isDirected) {
         final String[] details = string.split(";");
         Arrays.setAll(details, i -> details[i].trim());
-        final String origin = details[0];
-        final String destination = details[1];
+        String origin = details[0];
+        String destination = details[1];
+        if (details[2].equals("-1")){
+            origin = details[1];
+            destination = details[0];
+        }
         this.addVertex(origin);
         this.addVertex(destination);
 
         if (details.length >= 5) {
             final double weight = Double.parseDouble(details[3]);
             final List<LocalTime> departures = new ArrayList<>();
-            for (int i = 4; i < details.length; i++) {
+            final String[] flightTime = details[4].split(":");
+            final LocalTime finalFlightTime = LocalTime.of(Integer.parseInt(flightTime[0]), Integer.parseInt(flightTime[1]));
+            for (int i = 5; i < details.length; i++) {
                 final String[] time = details[i].split(":");
                 departures.add(LocalTime.of(Integer.parseInt(time[0]), Integer.parseInt(time[1])));
             }
 
-            final Edge destinationEdge = new Edge(destination, weight, departures);
+            final Edge destinationEdge = new Edge(destination, weight, departures, finalFlightTime);
             this.addEdge(origin, destinationEdge);
             if (!isDirected) {
-                final Edge originEdge = new Edge(origin, weight, departures);
+                final Edge originEdge = new Edge(origin, weight, departures, finalFlightTime);
                 this.addEdge(destination, originEdge);
                 this.numEdges--;
             }

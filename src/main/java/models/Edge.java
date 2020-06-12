@@ -14,11 +14,13 @@ public class Edge {
     protected final String destination;
     protected final double distance;
     protected final List<LocalTime> departureHours = new ArrayList<>();
+    protected final LocalTime flightTime;
 
-    public Edge(String destination, double distance, List<LocalTime> departureHours) {
+    public Edge(String destination, double distance, List<LocalTime> departureHours, LocalTime flightTime) {
         this.destination = destination;
         this.distance = distance;
         this.departureHours.addAll(departureHours);
+        this.flightTime = flightTime;
     }
 
     /**
@@ -29,7 +31,7 @@ public class Edge {
      * @return Time and Flight taken
      */
     public FlightDistanceHelper getFirstFlightCost(LocalTime departureTime) {
-        final double distanceInMinutes = Converter.distanceInMinutes(this.distance);
+        final double distanceInMinutes = (this.flightTime.getHour() * 60) + (this.flightTime.getMinute());
         final AtomicReference<LocalTime> firstFlightSameDay = new AtomicReference<>(null);
         final AtomicReference<LocalTime> firstFlightNextDay = new AtomicReference<>(null);
 

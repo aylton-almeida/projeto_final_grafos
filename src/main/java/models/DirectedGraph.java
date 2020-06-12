@@ -7,7 +7,7 @@ import java.util.*;
 
 public class DirectedGraph extends Graph {
     @Override
-    public void addVertexFromString(String string){
+    public void addVertexFromString(String string) {
         super.addVertexFromString(string, true);
     }
 
@@ -57,7 +57,7 @@ public class DirectedGraph extends Graph {
         this.adjacencyMap.get(source).forEach(edge -> {
                     distances.put(edge.destination, edge.distance);
                     connections.put(edge.destination, 1.0);
-                    flyingTime.put(edge.destination, Converter.distanceInMinutes(edge.distance));
+                    flyingTime.put(edge.destination, (double)((edge.flightTime.getHour() * 60) + (edge.flightTime.getMinute())));
                     totalDurationTime.put(edge.destination, edge.getFirstFlightCost(LocalTime.now()).minutesTaken);
 
                     distancesPaths.get(edge.destination).addAll(new ArrayList<>(Arrays.asList(source, edge.destination)));
@@ -115,7 +115,7 @@ public class DirectedGraph extends Graph {
                         double newWeight = switch (param) {
                             case DISTANCES -> weights.get(currentVertex) + edge.distance;
                             case CONNECTIONS -> weights.get(currentVertex) + 1;
-                            case FLYING_TIME -> weights.get(currentVertex) + Converter.distanceInMinutes(edge.distance);
+                            case FLYING_TIME -> weights.get(currentVertex) + ((edge.flightTime.getHour() * 60) + (edge.flightTime.getMinute()));
                             case TOTAL_DURATION_TIME -> weights.get(currentVertex) + edge.getFirstFlightCost(LocalTime.now()).minutesTaken;
                         };
                         if (newWeight < currentWeight) {
@@ -293,7 +293,9 @@ public class DirectedGraph extends Graph {
                             totalPathTime.adjustInto(totalPathTime.plusMinutes(time.getMinute()));
                         });
                     }
-                    filteredPossiblePaths.put(new HashMap<>(){{ put(possPath, possiblePaths.get(possPath));}}, totalPathTime);
+                    filteredPossiblePaths.put(new HashMap<>() {{
+                        put(possPath, possiblePaths.get(possPath));
+                    }}, totalPathTime);
                 }
                 System.out.println();
             }

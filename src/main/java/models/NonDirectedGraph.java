@@ -1,5 +1,6 @@
 package models;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -44,7 +45,7 @@ public class NonDirectedGraph extends Graph {
             if (!x.equals(y)) {
                 graph.addVertex(edge.vertex1);
                 graph.addVertex(edge.vertex2);
-                graph.addEdge(edge.vertex1, new Edge(edge.vertex2, edge.weight, new ArrayList<>()));
+                graph.addEdge(edge.vertex1, new Edge(edge.vertex2, edge.weight, new ArrayList<>(), LocalTime.now()));
                 numIncludedEdges++;
                 union(subsets, x, y);
             }
