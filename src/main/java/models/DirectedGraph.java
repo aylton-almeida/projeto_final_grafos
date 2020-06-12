@@ -163,12 +163,12 @@ public class DirectedGraph extends Graph {
     /**
      * Depth-first search
      */
-    void DepthFirstSearch(String vertice, HashMap<String, Boolean> visited) {
-        //mark the vertice as visited
-        visited.put(vertice, true);
+    void DepthFirstSearch(String vertex, HashMap<String, Boolean> visited) {
+        //mark the vertex as visited
+        visited.put(vertex, true);
 
-        // do for every edge which vertice is connected
-        for (Edge edge : this.adjacencyMap.get(vertice))
+        // do for every edge which vertex is connected
+        for (Edge edge : this.adjacencyMap.get(vertex))
             if (!visited.get(edge.destination))
                 DepthFirstSearch(edge.destination, visited);
     }
@@ -176,20 +176,20 @@ public class DirectedGraph extends Graph {
     /**
      * @return if graph is strongly connected or not
      */
-    public boolean isStronglyConnected(Set<String> verticesSet) {
-        Set<String> vertices;
-        vertices = Objects.requireNonNullElseGet(verticesSet, this.adjacencyMap::keySet);
-        // do for every vertice
-        for (String vertice : vertices) {
-            // stores vertices visited or not
+    public boolean isStronglyConnected(Set<String> vertexSet) {
+        Set<String> vertexs;
+        vertexs = Objects.requireNonNullElseGet(vertexSet, this.adjacencyMap::keySet);
+        // do for every vertex
+        for (String vertex : vertexs) {
+            // stores vertex visited or not
             HashMap<String, Boolean> visited = new HashMap<>();
             for (String v : this.adjacencyMap.keySet())
                 visited.put(v, false);
 
-            // start DFS from first vertice
-            DepthFirstSearch(vertice, visited);
+            // start DFS from first vertex
+            DepthFirstSearch(vertex, visited);
 
-            // if DFS doesn't visit all vertices, then graph is not strongly connected
+            // if DFS doesn't visit all vertex, then graph is not strongly connected
             for (Map.Entry<String, Boolean> v : visited.entrySet()) {
                 if (!visited.get(v.getKey())) return false;
             }
@@ -199,26 +199,26 @@ public class DirectedGraph extends Graph {
 
     public void printEssentialAirports() {
         System.out.println("Airport is strongly connected");
-        Set<String> vertices = new HashSet<>(this.adjacencyMap.keySet());
-        for (String vertice : this.adjacencyMap.keySet()) {
-            vertices.remove(vertice);
-            if (this.isStronglyConnected(vertices))
-                System.out.println("Airport " + vertice + " is essential and removing it from graph turns it into a not strongly connected graph.");
-            vertices = new HashSet<>(this.adjacencyMap.keySet());
+        Set<String> vertexs = new HashSet<>(this.adjacencyMap.keySet());
+        for (String vertex : this.adjacencyMap.keySet()) {
+            vertexs.remove(vertex);
+            if (this.isStronglyConnected(vertexs))
+                System.out.println("Airport " + vertex + " is essential and removing it from graph turns it into a not strongly connected graph.");
+            vertexs = new HashSet<>(this.adjacencyMap.keySet());
         }
     }
 
     public void printStronglyConnectedAirports() {
         System.out.println("Airport is not fully strongly connected, but these airports sets are: ");
-        // do for every vertice
-        for (String vertice : this.adjacencyMap.keySet()) {
-            // stores vertices visited or not
+        // do for every vertex
+        for (String vertex : this.adjacencyMap.keySet()) {
+            // stores vertex visited or not
             HashMap<String, Boolean> visited = new HashMap<>();
             for (String v : this.adjacencyMap.keySet())
                 visited.put(v, false);
 
-            // start DFS from first vertice
-            DepthFirstSearch(vertice, visited);
+            // start DFS from first vertex
+            DepthFirstSearch(vertex, visited);
 
             // if hasVisitedAll, means that airport is connected to all other ones
             boolean hasVisitedAll = true;
@@ -228,9 +228,9 @@ public class DirectedGraph extends Graph {
                 }
             }
             if (hasVisitedAll) {
-                System.out.print(vertice + " can reach out to airports ");
+                System.out.print(vertex + " can reach out to airports ");
                 for (Map.Entry<String, Boolean> v : visited.entrySet()) {
-                    if (!v.getKey().equals(vertice)) {
+                    if (!v.getKey().equals(vertex)) {
                         System.out.print(v.getKey() + " ");
                     }
                 }
