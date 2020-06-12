@@ -12,14 +12,6 @@ public class Main {
         System.out.println("Good Morning! 😊");
         int option = 0;
         while (option != 5) {
-            System.out.print("Please write your file name: ");
-            String fileName = sc.nextLine();
-
-            if (!fileName.endsWith(".txt"))
-                fileName += ".txt";
-
-            FileManager fileManager = new FileManager(fileName);
-
             System.out.println("[1] - Smallest Distance");
             System.out.println("[2] - Is Connected Detailed");
             System.out.println("[3] - Reunion problem");
@@ -30,46 +22,22 @@ public class Main {
             sc.nextLine();
 
             switch (option) {
-                case 1:
-                    smallestDistance(sc, fileManager);
-                    break;
-                default:
-                    System.out.println("Have a good evening 😊");
-                    break;
+                case 1 -> smallestDistance(sc);
+                case 2 -> isConnectedDetailed(sc);
+                case 4 -> planesNecessary(sc);
+                default -> System.out.println("Have a good evening 😊");
             }
         }
-
-//        // SHORTEST PATH EXAMPLE
-//        FileManager fileManager = new FileManager("bigGraph.txt");
-//        try {
-//            DirectedGraph graph = fileManager.readDirectedGraphFile();
-//            graph.calculateShortestPathFromSource("D", "A");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        //THIRD PROBLEM EXAMPLE
-//        FileManager fileManager2 = new FileManager("stronglyConnectedGraph.txt");
-//        FileManager fileManager3 = new FileManager("notStronglyConnectedGraph.txt");
-//        try {
-//            DirectedGraph scg = fileManager2.readDirectedGraphFile();
-//            DirectedGraph nscg = fileManager3.readDirectedGraphFile();
-//            scg.thirdProblem();
-//            nscg.thirdProblem();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
-//        FileManager fileManager3 = new FileManager("treeGraph.txt");
-//        try {
-//            NonDirectedGraph graph = fileManager3.readNonDirectedGraphFile();
-//            graph.kruskalAlgorithm();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
     }
 
-    static void smallestDistance(Scanner sc, FileManager fileManager) {
+    static void smallestDistance(Scanner sc) {
+        System.out.print("Please write your file name: ");
+        String fileName = sc.nextLine();
+
+        if (!fileName.endsWith(".txt"))
+            fileName += ".txt";
+
+        FileManager fileManager = new FileManager(fileName);
         DirectedGraph graph;
         try {
             graph = fileManager.readDirectedGraphFile();
@@ -85,6 +53,39 @@ public class Main {
 
             graph.calculateShortestPathFromSource(source, destination);
             sc.nextLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    static void isConnectedDetailed(Scanner sc) {
+        System.out.print("Please write your file name: ");
+        String fileName = sc.nextLine();
+
+        if (!fileName.endsWith(".txt"))
+            fileName += ".txt";
+
+        FileManager fileManager = new FileManager(fileName);
+        DirectedGraph graph;
+        try {
+            graph = fileManager.readDirectedGraphFile();
+            graph.thirdProblem();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    static void planesNecessary(Scanner sc) {
+        System.out.print("Please write your file name: ");
+        String fileName = sc.nextLine();
+
+        if (!fileName.endsWith(".txt"))
+            fileName += ".txt";
+
+        FileManager fileManager = new FileManager(fileName);
+        try {
+            NonDirectedGraph graph = fileManager.readNonDirectedGraphFile();
+            graph.kruskalAlgorithm();
         } catch (IOException e) {
             e.printStackTrace();
         }

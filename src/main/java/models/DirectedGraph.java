@@ -198,7 +198,7 @@ public class DirectedGraph extends Graph {
     }
 
     public void printEssentialAirports() {
-        System.out.println("Airport is strongly connected");
+        System.out.println("Routes Network is strongly connected");
         Set<String> vertexes = new HashSet<>(this.adjacencyMap.keySet());
         for (String vertex : this.adjacencyMap.keySet()) {
             vertexes.remove(vertex);
