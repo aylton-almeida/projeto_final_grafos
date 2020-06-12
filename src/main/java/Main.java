@@ -85,7 +85,8 @@ public class Main {
         FileManager fileManager = new FileManager(fileName);
         try {
             NonDirectedGraph graph = fileManager.readNonDirectedGraphFile();
-            graph.kruskalAlgorithm();
+            int numberPlanes = graph.kruskalAlgorithm();
+            System.out.println(String.format("\nYou will need %s planes\n", numberPlanes));
         } catch (IOException e) {
             e.printStackTrace();
         }

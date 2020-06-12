@@ -16,7 +16,7 @@ public class NonDirectedGraph extends Graph {
     /**
      * Gets the minimum spanning tree from a graph
      */
-    public void kruskalAlgorithm() {
+    public int kruskalAlgorithm() {
         LinkedList<DoubleVertexEdge> edges = this.getEdges()
                 .stream()
                 .sorted(Comparator.comparingDouble(e -> e.weight))
@@ -52,6 +52,7 @@ public class NonDirectedGraph extends Graph {
         }
 
         System.out.println(graph);
+        return graph.numEdges;
     }
 
     /**
