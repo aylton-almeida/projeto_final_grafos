@@ -247,4 +247,57 @@ public class DirectedGraph extends Graph {
         }
     }
 
+    /**
+     * Depth-first search
+     */
+    void DepthFirstSearch(String vertice, HashMap<String, Boolean> visited, HashMap<String, LinkedList<String>> paths) {
+        //mark the vertice as visited
+        visited.put(vertice, true);
+
+        // do for every edge which vertice is connected
+        for (Edge edge : this.adjacencyMap.get(vertice)) {
+            if (!paths.get(vertice).contains(edge.destination))
+                paths.get(vertice).add(edge.destination);
+            if (!visited.get(edge.destination))
+                DepthFirstSearch(edge.destination, visited, paths);
+        }
+    }
+
+    public void lastAvailableFlight(String origin, String destination, LocalTime meeting) {
+        HashMap<String, Boolean> visited = new HashMap<>();
+        // origin, list<reachable vertices>
+        HashMap<String, LinkedList<String>> paths = new HashMap<>();
+        ArrayList<String> vertices = new ArrayList<>();
+        for (String v : this.adjacencyMap.keySet()) {
+            visited.put(v, false);
+            vertices.add(v);
+            paths.put(v, new LinkedList<>());
+        }
+
+        DepthFirstSearch(origin, visited, paths);
+
+        for (Map.Entry<String, Boolean> v : visited.entrySet()) {
+            // means that can reach to destination
+            if (vertices.get(vertices.indexOf(v.getKey())).equals(destination)) {
+                // get all paths that has destination (possiblePaths)
+                HashMap<String, LinkedList<String>> possiblePaths = new HashMap<>();
+                for (LinkedList<String> ways : paths.values())
+                    if (ways.contains(destination)) possiblePaths.put(v.getKey(), ways);
+                // get paths + each path time sum
+                HashMap<HashMap<String, LinkedList<String>>, LocalTime> filteredPossiblePaths = new HashMap<>();
+                for (String possPath : possiblePaths.keySet()) {
+                    LocalTime totalPathTime = LocalTime.of(0, 0);
+                    for (Edge e : this.adjacencyMap.get(possPath)) {
+                        e.departureHours.forEach((time) -> {
+                            totalPathTime.adjustInto(totalPathTime.plusHours(time.getHour()));
+                            totalPathTime.adjustInto(totalPathTime.plusMinutes(time.getMinute()));
+                        });
+                    }
+                    filteredPossiblePaths.put(new HashMap<>(){{ put(possPath, possiblePaths.get(possPath));}}, totalPathTime);
+                }
+                System.out.println();
+            }
+        }
+    }
+
 }

@@ -24,6 +24,7 @@ public class Main {
             switch (option) {
                 case 1 -> smallestDistance(sc);
                 case 2 -> isConnectedDetailed(sc);
+                case 3 -> reunionProblem();
                 case 4 -> planesNecessary(sc);
                 default -> System.out.println("Have a good evening 😊");
             }
@@ -73,6 +74,10 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    static void reunionProblem(){
+        System.out.println("\nSorry 😥, this method is not available at the moment, please try again later\n");
     }
 
     static void planesNecessary(Scanner sc) {
