@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class NonDirectedGraph extends Graph {
@@ -23,8 +22,8 @@ public class NonDirectedGraph extends Graph {
                 .sorted(Comparator.comparingDouble(e -> e.weight))
                 .collect(Collectors.toCollection(LinkedList::new));
 
-        HashMap<String, subset> subsets = new HashMap<>();
-        this.adjacencyMap.forEach((key, value) -> subsets.put(key, new subset()));
+        HashMap<String, Subset> subsets = new HashMap<>();
+        this.adjacencyMap.forEach((key, value) -> subsets.put(key, new Subset()));
 
         this.adjacencyMap.forEach((key, value) -> {
             subsets.get(key).parent = key;
@@ -38,16 +37,16 @@ public class NonDirectedGraph extends Graph {
         while (numIncludedEdges < this.adjacencyMap.size() - 1) {
             DoubleVertexEdge edge = edges.get(count);
 
+            // Find both vertexes root parents
             String x = find(subsets, edge.vertex1);
             String y = find(subsets, edge.vertex2);
-
 
             if (!x.equals(y)) {
                 graph.addVertex(edge.vertex1);
                 graph.addVertex(edge.vertex2);
                 graph.addEdge(edge.vertex1, new Edge(edge.vertex2, edge.weight, new ArrayList<>()));
                 numIncludedEdges++;
-                Union(subsets, x, y);
+                union(subsets, x, y);
             }
             count++;
         }
@@ -58,29 +57,33 @@ public class NonDirectedGraph extends Graph {
     /**
      * A class to represent a subset for union-find
      */
-    static class subset {
+    static class Subset {
         String parent;
         int rank;
     }
 
     /**
-     * A utility function to find set of an element i
+     * A utility function to find the root parent of a defined vertex
      *
      * @param subsets Subsets array
-     * @param i       element set to be found
+     * @param v       vertex parent to be found
      * @return parent of subset
      */
-    String find(HashMap<String, subset> subsets, String i) {
+    String find(HashMap<String, Subset> subsets, String v) {
         // find root and make root as parent of i (path compression)
-        if (!subsets.get(i).parent.equals(i))
-            subsets.get(i).parent = find(subsets, subsets.get(i).parent);
+        if (!subsets.get(v).parent.equals(v))
+            subsets.get(v).parent = find(subsets, subsets.get(v).parent);
 
-        return subsets.get(i).parent;
+        return subsets.get(v).parent;
     }
 
-    // A function that does union of two sets of x and y
-    // (uses union by rank)
-    void Union(HashMap<String, subset> subsets, String x, String y) {
+    /**
+     * Unite two subsets
+     * @param subsets Subsets list
+     * @param x First Vertex
+     * @param y Second Vertex
+     */
+    void union(HashMap<String, Subset> subsets, String x, String y) {
         String xRoot = find(subsets, x);
         String yRoot = find(subsets, y);
 
